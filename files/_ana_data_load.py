@@ -52,28 +52,28 @@ with open('files/_analytical_data/_ana_heuristic_bestfit_maxside_numpy_1.pkl', '
 df_CPM = pd.read_csv(r'scripts\output\_ana_CPM\analyze_CPM_L120_final.csv', header=0)
 with open(output_file_path, 'a') as fo:
     print('-' * char_count, file=fo)
-    print('ANALYTICAL DATA OF CP_model.py WITH time_limit = 120'.center(char_count), file=fo)
+    print('ANALYTICAL DATA OF CP.py WITH time_limit = 120'.center(char_count), file=fo)
     print('-' * char_count, file=fo)
     print(df_CPM.describe(), file=fo)
 
 df_CPM_dropped_na = df_CPM.dropna(how='any').copy()
 with open(output_file_path, 'a') as fo:
     print('-' * char_count, file=fo)
-    print('ANALYTICAL DATA (DROPPED N/A) OF CP_model.py WITH time_limit = 120'.center(char_count), file=fo)
+    print('ANALYTICAL DATA (DROPPED N/A) OF CP.py WITH time_limit = 120'.center(char_count), file=fo)
     print('-' * char_count, file=fo)
     print(df_CPM_dropped_na.describe(), file=fo)
 
 df_MIP = pd.read_csv(r'scripts\output\_ana_MIP\analyze_MIP.csv', header=0)
 with open(output_file_path, 'a') as fo:
     print('-' * char_count, file=fo)
-    print('ANALYTICAL DATA OF mip_model.py WITH time_limit = 300'.center(char_count), file=fo)
+    print('ANALYTICAL DATA OF MIP.py WITH time_limit = 300'.center(char_count), file=fo)
     print('-' * char_count, file=fo)
     print(df_MIP.describe(), file=fo)
 
 df_MIP_dropped_na = df_MIP.dropna(how='any').copy()
 with open(output_file_path, 'a') as fo:
     print('-' * char_count, file=fo)
-    print('ANALYTICAL DATA (DROPPED N/A) OF mip_model.py WITH time_limit = 300'.center(char_count), file=fo)
+    print('ANALYTICAL DATA (DROPPED N/A) OF MIP.py WITH time_limit = 300'.center(char_count), file=fo)
     print('-' * char_count, file=fo)
     print(df_MIP_dropped_na.describe(), file=fo)
 
@@ -142,13 +142,13 @@ char_count = 50
 with open(r'files\_ana_data_loaded_df.txt', 'w') as fo:
     df_CPM.sort_values(by='n_rect', inplace=True)
     print('-' * char_count, file=fo)
-    print('ANALYTICAL DATA OF CP_model.py WITH time_limit = 120'.center(char_count), file=fo)
+    print('ANALYTICAL DATA OF CP.py WITH time_limit = 120'.center(char_count), file=fo)
     print('-' * char_count, file=fo)
     print(df_CPM, file=fo)
 
     df_MIP.sort_values(by='n_rect', inplace=True)
     print('-' * char_count, file=fo)
-    print('ANALYTICAL DATA OF mip_model.py WITH time_limit = 300'.center(char_count), file=fo)
+    print('ANALYTICAL DATA OF MIP.py WITH time_limit = 300'.center(char_count), file=fo)
     print('-' * char_count, file=fo)
     print(df_MIP, file=fo)
 

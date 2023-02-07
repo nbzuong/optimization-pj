@@ -1,5 +1,5 @@
 --------------------------------------------------
-ANALYTICAL DATA OF CP_model.py WITH time_limit = 120
+  ANALYTICAL DATA OF CP.py WITH time_limit = 120  
 --------------------------------------------------
     n_rect  n_car     cost  n_car_used  time_limit  time_running
 0        5      3    350.0         1.0         120          0.07
@@ -78,7 +78,7 @@ ANALYTICAL DATA OF CP_model.py WITH time_limit = 120
 72     950    335      NaN         NaN         120        472.50
 73    1000    346      NaN         NaN         120        660.40
 --------------------------------------------------
-ANALYTICAL DATA OF mip_model.py WITH time_limit = 300
+ ANALYTICAL DATA OF MIP.py WITH time_limit = 300  
 --------------------------------------------------
     n_rect  n_car     cost  n_car_used  time_limit  time_running
 0        5      3    350.0         1.0         300          0.07
