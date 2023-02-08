@@ -17,7 +17,7 @@ class TimeExceededError(Exception):
 
 def fitable_not_rotated(rect, a, i, j):
     '''
-    check if the rect fit the car array a at the coordinate (i, j),
+    check if the rect fit the truck array a at the coordinate (i, j),
     without rotating
     '''
     try:
@@ -30,8 +30,8 @@ def fitable_not_rotated(rect, a, i, j):
 
 def fitable_rotated(rect, a, i, j):
     '''
-    check if the rect fit the car array a at the coordinate (i, j),
-    after rotating
+    check if the rect fit the truck array a at the coordinate (i, j),
+    rotating = True
     '''
     try:
         if (a[i: i+rect[1], j: j+rect[0]] == 1).any():
@@ -43,7 +43,7 @@ def fitable_rotated(rect, a, i, j):
 
 def fitable(rect, a, i, j):
     '''
-    check if the rect fit the car array a at the coordinate (i, j)
+    check if the rect fit the truck array a at the coordinate (i, j)
         return None if not fit,
         return True if don't need to rotate
         return False if need to rotate
@@ -58,10 +58,7 @@ def fitable(rect, a, i, j):
 
 def insert_remove(rect, a, i, j, not_rotate, value=1):
     '''
-    return
-        a[i:i+rect[0], j:j+rect[1]] = value if not_rotate == True
-        or
-        a[i:i+rect[1], j:j+rect[0]] = value if not_rotate == False
+    return if it is possible to place the rect in the current position
     if a is numpy array
     '''
     a = deepcopy(a)
@@ -72,28 +69,27 @@ def insert_remove(rect, a, i, j, not_rotate, value=1):
     return a
 
 
-def fit(rects_to_fit, car_to_fit):
-    '''check if all rects in rects_to_fit fit the car_to_fit'''  # scuse me wtf? 
+def fit(rects_to_fit, truck_to_fit):
+    '''check if all rects in rects_to_fit fit the truck_to_fit'''   
     global ITER_time_start
 
-    def fit_run(rects_left:list, car:tuple, a:list):
+    def fit_run(rects_left:list, truck:tuple, a:list):
         '''run the algo'''
         nonlocal res
-        # if there is no rect left, so every rect have fitted in the car
-        # so the function fit is True
+        # if there is no rect left, so every rect have fitted in the truck => raise FitSolutionFound
         if not rects_left:
             res = True
             raise FitSolutionFound
 
-        # if there is a rect, pop it out then continue to run...
+        # if there is a rect, proceed to find a way to place the rects in the bin
         else:
             rect = rects_left.pop(0)
 
-            # try it in every place of the car
-            for i in range(car[0]):
-                for j in range(car[1]):
+            # try it in every place possible 
+            for i in range(truck[0]):
+                for j in range(truck[1]):
                     # check the timer, if it exceeded the configured time limit
-                    # throw TimeExceededError to skip the current car
+                    # throw TimeExceededError to skip the current truck
                     if time.time() - ITER_time_start > GLOBAL_TIME_LIMIT_PER_ITER:
                         raise TimeExceededError
                     
@@ -103,25 +99,24 @@ def fit(rects_to_fit, car_to_fit):
                     fitable_var = fitable(rect, a, i, j)
                     if fitable_var is not None:
                         a = deepcopy(insert_remove(rect, a, i, j, fitable_var, value=1))
-                        fit_run(rects_left, car, a)
+                        fit_run(rects_left, truck, a)
                         a = deepcopy(insert_remove(rect, a, i, j, fitable_var, value=0))
 
-            # reappend the popped rect
-            # most of the time, this will not run, but imma do it just to be safe
+            # reappend the popped rect in case cannot find a possible way to put the rect, most likely would not happen
             rects_left.append(rect)
 
     # result
     res = False
 
     # init a
-    # a is the list of lists of ints (2d int array) to indicate the current state of the car
+    # a is the list of lists of ints (2d int array) to indicate the current state of the truck
     # where 0 is not occupied, 1 otherwise
-    a = np.zeros((car_to_fit[0], car_to_fit[1]), dtype=int)
+    a = np.zeros((truck_to_fit[0], truck_to_fit[1]), dtype=int)
 
-    # try to fit all rects in the car
+    # try to fit all rects in the truck
     try:
         fit_run(rects_left=rects_to_fit,
-                        car=car_to_fit,
+                        truck=truck_to_fit,
                         a=a,
         )
     # if FitSolutionFound is thrown, stop it right away to save time
@@ -134,37 +129,37 @@ def fit(rects_to_fit, car_to_fit):
 # -------------------------------- READ INPUT --------------------------------
 def read_input(file_path):
     with open(file_path) as f:
-        rect_count, car_count = map(int, f.readline().split())
-        rects, cars = list(), list()
+        rect_count, truck_count = map(int, f.readline().split())
+        rects, trucks = list(), list()
 
         for _ in range(rect_count):
             rects.append(tuple(map(int, f.readline().split())))
 
-        for _ in range(car_count):
-            cars.append(tuple(map(int, f.readline().split())))
+        for _ in range(truck_count):
+            trucks.append(tuple(map(int, f.readline().split())))
 
-    return rect_count, car_count, rects, cars
+    return rect_count, truck_count, rects, trucks
 
 
 # -------------------------------- UTILITIES --------------------------------
 def area(tup):
-    '''return the area of rect or car, generally called tup (stands for tuple)'''
+    '''return the area of rect or truck, generally called tup (stands for tuple)'''
     return tup[0] * tup[1]
 
 
-def fee_per_area(car):
-    '''return fee per area of the car'''
-    return car[2] / (car[0]*car[1])
+def fee_per_area(truck):
+    '''return fee per area of the truck'''
+    return truck[2] / (truck[0]*truck[1])
 
 
-def used_cars_indices(rects_contained):
-    '''a list of indices of used cars, given the rects in cars'''
+def used_trucks_indices(rects_contained):
+    '''a list of indices of used trucks, given the rects in trucks'''
     return [index for index, lst in enumerate(rects_contained) if lst]
 
 
-def total_cost(cars, used_cars_indices_var):
-    '''return the total cost, given the indices of the cars used'''
-    return sum(car[2] for index, car in enumerate(cars) if index in used_cars_indices_var)
+def total_cost(trucks, used_trucks_indices_var):
+    '''return the total cost, given the indices of the trucks used'''
+    return sum(truck[2] for index, truck in enumerate(trucks) if index in used_trucks_indices_var)
 
 
 # -------------------------------- MAIN --------------------------------
@@ -174,46 +169,46 @@ if __name__ == '__main__':
     # A good time limit should be between 0.1 and 10 seconds.
     GLOBAL_TIME_LIMIT_PER_ITER = 0.1
     file_path = 'files/generated_data/1000.txt'
+    
     # removing prints (SILENT = True) 
     # possibly result in a lower running time, about from 0.1 to 1 second
     SILENT = False
 
-    # -------------------------------- READ INPUT --------------------------------
-    rect_count, car_count, rects, cars = read_input(file_path)
+    rect_count, truck_count, rects, trucks = read_input(file_path)
     if not SILENT:
         print('-------------------- INPUT --------------------')
         print(rect_count)
         print(rects)
-        print(car_count)
-        print(cars)
+        print(truck_count)
+        print(trucks)
         print()
 
-    # -------------------------------- START TIMER --------------------------------
+    
     GLOBAL_time_start = time.time()
 
-    # -------------------------------- SORT --------------------------------
+    
     # rects: sort them by area in descending order
     rects.sort(key=area, reverse=True)
 
-    # cars: sort them by fee per area in ascending order
-    cars.sort(key=fee_per_area)
+    # trucks: sort them by fee per area in ascending order
+    trucks.sort(key=fee_per_area)
     
     if SILENT:
-        print('Running silently... Just wait...')
+        print('Running...')
     else:
         print('-------------------- SORTED LISTS --------------------')
         print(rects)
-        print(cars)
+        print(trucks)
         print('-------------------- RUN --------------------')
 
-    # -------------------------------- INITIALIZE --------------------------------
-    # area left in each car
-    areas_left: list[int] = [area(car) for car in cars]
-    # list of rect contained in each car
-    rects_contained: list[list] = [list() for _ in range(len(cars))]
+
+    # area left in each truck
+    areas_left: list[int] = [area(truck) for truck in trucks]
+    # list of rect contained in each truck
+    rects_contained: list[list] = [list() for _ in range(len(trucks))]
     time_exceeded_count = 0  
     
-    # -------------------------------- RUN BEST-FIT HEURISTIC --------------------------------
+    
     while rects:
         # -------------------------------- TAKE A RECT --------------------------------
         if not SILENT:
@@ -222,25 +217,25 @@ if __name__ == '__main__':
         rect = rects.pop(0)
         area_rect = area(rect)
 
-        # -------------------------------- ITERATE THROUGH CARS --------------------------------
-        for index, (car, area_left, rects_contained_in_car) in \
-                enumerate(zip(cars, areas_left, rects_contained)):
-            # skip the car if the rect is bigger than the area left 
+        # -------------------------------- ITERATE THROUGH TRUCKS --------------------------------
+        for index, (truck, area_left, rects_contained_in_truck) in \
+                enumerate(zip(trucks, areas_left, rects_contained)):
+            # skip the truck if the rect is bigger than the area left 
             if area_left < area_rect:
                 continue
             
-            # start the timer for each car
+            # start the timer for each attempt to pack 
             ITER_time_start = time.time()
 
-            # try to fit the rect + previous rects currently in the car
+            # try to fit the rect + previous rects currently in the truck
             try:
                 # in fit(), the TimeExceededError is thrown if the time exceeded
-                if fit(rects_contained_in_car+[rect], car):
-                    # reduce the area left of the car
+                if fit(rects_contained_in_truck+[rect], truck):
+                    # reduce the area left of the truck
                     areas_left[index] -= area_rect
-                    # add the rect to the list of rects already in the car
+                    # add the rect to the list of rects already in the truck
                     rects_contained[index].append(rect)
-                    # break out of the car loop
+                    # break out of the truck loop
                     break
 
             except TimeExceededError:
@@ -257,10 +252,10 @@ if __name__ == '__main__':
     print('THE SOLUTION FOUND:')
     print(rects_contained)
 
-    used_cars_indices_var = used_cars_indices(rects_contained)
-    print(f'NUMBER OF CARS USED: {len(used_cars_indices_var)}')
+    used_trucks_indices_var = used_trucks_indices(rects_contained)
+    print(f'NUMBER OF truckS USED: {len(used_trucks_indices_var)}')
     
-    print(f'COST: {total_cost(cars, used_cars_indices_var)}')
+    print(f'COST: {total_cost(trucks, used_trucks_indices_var)}')
 
     print('-------------------- OTHER STATS --------------------')
     print(f'Total running time: {GLOBAL_time_end - GLOBAL_time_start}')
