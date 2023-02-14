@@ -27,7 +27,7 @@ def best_score(remaining_area, truck):
 
 if __name__ == '__main__':
     
-    file_path = 'files/generated_data/5000.txt'
+    file_path = 'files/generated_data/1000.txt'
 
     #limit the time taken per iteration to reduce runtime at the cost of maybe skipped a better optimized solution
     GLOBAL_TIME_LIMIT_PER_ITER = 0.1
