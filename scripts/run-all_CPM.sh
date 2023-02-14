@@ -1,13 +1,13 @@
 #!/bin/bash
 # please run this from root of source code:
 #
-# ~/optimization-project$ scripts/run-all_MIP.sh
+# ~/optimization$ scripts/run-all_CPM.sh
 
 # change dir to root of project
 cd $PWD
 
-outdir=scripts/output/out_MIP
-analyzedir=scripts/output/analyze_MIP
+outdir=scripts/output/out_CPM
+analyzedir=scripts/output/analyze_CPM
 
 # create output folder
 mkdir -p $outdir
@@ -21,8 +21,8 @@ for i in $x; do
 	echo "ping: $i";
 	
 	# in order: file for algo output, output parser, input for algo
-	file="$outdir/out_MIP_$i";
-	analyze="$analyzedir/analyze_MIP_$i";
+	file="$outdir/out_CPM_$i";
+	analyze="$analyzedir/analyze_CPM_$i";
 	filepath="files/generated_data/$i"
 	
 	# create file for algo output and output parser
@@ -30,9 +30,9 @@ for i in $x; do
 	touch $analyze;
 	
 	# execute CPM & time it
-	/usr/bin/time -f "time: %e" -ao $file python3 files/mip_model.py $filepath > $file;
-	
-done
+	/usr/bin/time -f "time: %e" -ao $file python3 files/CP_model.py $filepath > $file;
 
-# run parser & converter
-bash scripts/parse-output.sh MIP
+done
+	
+# run parser
+bash scripts/parse-output.sh CPM

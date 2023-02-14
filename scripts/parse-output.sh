@@ -3,7 +3,7 @@
 # :~ $ $(PWD)/script_parse-output.sh <MODE>
 #
 # where:
-#	<MODE> = MIP | CP
+#	<MODE> = MIP | CPM
 #
 # input:
 #	out_<MODE>/*
@@ -18,16 +18,16 @@
 #	<N_TRUCKS_USED>
 #
 # < to analyze_<MODE>.csv
-#	n_rect,n_truck,cost,n_truck_used,time_limit,time_running
+#	n_rect,n_car,cost,n_car_used,time_limit,time_running
 #
 # change dir to root of project
 cd $PWD
 
 # READ
-mode=$1   # CP, MIP
+mode=$1   # CPM, MIP
 
-# MODE: CP
-if [ $mode == "CP" ];
+# MODE: CPM
+if [ $mode == "CPM" ];
 then
 	# list all pre-gen states
 	f=$(cd files/generated_data/; find . -name "*.txt" | awk '{print substr($0, 3)}' | sort )
@@ -36,18 +36,18 @@ then
 	csvdir=scripts/output/_analyze_$mode
 	csvfile=$csvdir/analyze_$mode.csv
 	mkdir -p $csvdir	
-	echo "n_rect,n_truck,cost,n_truck_used,time_limit,time_running" > $csvfile
+	echo "n_rect,n_car,cost,n_car_used,time_limit,time_running" > $csvfile
 
 	for i in $f; do
 		# file shortcut
 		file="scripts/output/out_$mode/out_$mode_$i";           # data to read from
 		analyze="scripts/output/analyze_$mode/analyze_MIP_$i";  # write to
 		filepath="files/generated_data/$i";                     # read some info directly from input
-		ret=$(cat $file | tail -n7)                             # return info from CP program
+		ret=$(cat $file | tail -n7)                             # return info from CPM program
 
-		# order: n_rects, n_trucks, sanity test
+		# order: n_rects, n_cars, sanity test
 		PKG=$(cat $filepath | head -n1 | awk '{print $1}');
-		truck=$(cat $filepath | head -n1 | awk '{print $2}');
+		CAR=$(cat $filepath | head -n1 | awk '{print $2}');
 		CUS=$(cat $filepath | head -n1 | awk '{print $1}');
 		
 		# if $CUS is read, is not "command" in command terminated by/with ...,
@@ -71,11 +71,11 @@ then
 		
 		# analyze
 		echo $PKG >  $analyze; # n pkgs
-		echo $truck >> $analyze; # n trucks
+		echo $CAR >> $analyze; # n cars
 		echo $CST >> $analyze; # min cost
 		echo 300  >> $analyze; # time limit, defaulted 300
 		echo $TME >> $analyze; # time elapsed
-		echo $CUS >> $analyze; # n truck used
+		echo $CUS >> $analyze; # n car used
 	done
 fi
 
@@ -89,7 +89,7 @@ then
 	csvdir=scripts/output/$mode
 	csvfile=$csvdir/analyze_$mode.csv
 	mkdir -p $csvdir	
-	echo "n_rect,n_truck,cost,n_truck_used,time_limit,time_running" > $csvfile
+	echo "n_rect,n_car,cost,n_car_used,time_limit,time_running" > $csvfile
 
 
 	for i in $f; do
@@ -98,32 +98,32 @@ then
 		analyze="scripts/output/analyze_MIP/analyze_MIP_$i";  # write to
 		filepath="files/generated_data/$i";                   # read some info directly from input
 		
-		# order: n_rects, n_trucks, min_cost, r_time
+		# order: n_rects, n_cars, min_cost, r_time
 		PKG=$(cat $filepath | head -n1 | awk '{print $1}');
-		truck=$(cat $filepath | head -n1 | awk '{print $2}');
+		CAR=$(cat $filepath | head -n1 | awk '{print $2}');
 		CUS=$(cat $file | head -n1 | awk '{print $3}');
 		TME=$(cat $file | tail -n1 | awk '{print $2}');
 		
 		# if $CUS is read, is not "by" or "with" in command terminated by/with ...,
-		# a solution was found, read its truck_USED
+		# a solution was found, read its CAR_USED
 		if [ ! -z "$CUS" ] || [ $CUS != "by" ] || [ $CUS != "with" ] ; then
 			CUS=$(cat $file | tail -n2 | head -n1 | awk '{print $2}');
 		fi
 		
 		# analyze
 		echo $PKG >  $analyze; # n pkgs
-		echo $truck >> $analyze; # n trucks
+		echo $CAR >> $analyze; # n cars
 		echo $CST >> $analyze; # min cost
 		echo 300  >> $analyze; # time limit, defaulted 300
 		echo $TME >> $analyze; # time elapsed
-		echo $CUS >> $analyze; # n truck used
+		echo $CUS >> $analyze; # n car used
 		
 		# output to CSV
-		echo "$PKG,$truck,$CST,$CUS,300.0,$TME" >> $csvfile;
+		echo "$PKG,$CAR,$CST,$CUS,300.0,$TME" >> $csvfile;
 	done
 fi
 
 # ping
 # output to CSV
-echo "$PKG,$truck,$CUS,$CUS,300.0,$TME" >> $csvfile;
+echo "$PKG,$CAR,$CUS,$CUS,300.0,$TME" >> $csvfile;
 echo "written"
