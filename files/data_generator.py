@@ -147,7 +147,7 @@ if __name__ == '__main__':
     rect_counts = [i for i in range(5, 55)] + \
                   [i for i in range(60, 331, 30)] + \
                   [i for i in range(350, 1000, 50)] +\
-                    [i for i in range(1000, 5001, 1000)]
+                  [i for i in range(1000, 5001, 1000)]
     print('rect_counts:', rect_counts)
     print('len:', len(rect_counts))
     print()
