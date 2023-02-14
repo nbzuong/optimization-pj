@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 def plot_full_truck_and_cut_truck(truck_array, removed_array, shape, len_trucks):
     plt.plot([0, shape[1], shape[1]], [shape[0], shape[0], 0], 'red')
-    plt.imshow(truck_array, cmap='turbo', extent=(0,30, 30,0), vmin=-1, vmax=5)
+    plt.imshow(truck_array, cmap='turbo', extent=(0,25,25,0), vmin=-1, vmax=5)
     plt.savefig(f'files/generated_figures/{len_trucks}_A')
     plt.clf()
 
@@ -19,7 +19,7 @@ def plot_full_truck_and_cut_truck(truck_array, removed_array, shape, len_trucks)
 
 
 def plot_building_solution(truck_array, available_places):
-    plt.imshow(truck_array, cmap='turbo', extent=(0,30,30,0), vmin=-1, vmax=5)
+    plt.imshow(truck_array, cmap='turbo', extent=(0,25,25,0), vmin=-1, vmax=5)
     for place in available_places:
         plt.text(place[1]+0.5, place[0], 'x', ha='center', va='top', c='white')
     plt.savefig(f'files/generated_figures/{len(available_places)}')
@@ -28,7 +28,7 @@ def plot_building_solution(truck_array, available_places):
 
 def rd_a_rect() -> tuple[int, int]:
     '''random a rectangle, return size'''
-    return rd.randrange(1, 11), rd.randrange(1, 11)
+    return rd.randrange(1, 6), rd.randrange(1, 6)
 
 
 def rd_some_rects(rect_count: int) -> list[tuple[int, int]]:
@@ -58,7 +58,7 @@ def rd_put(rects, save_figures=False) -> np.array:
     '''
     randomly put each rectangle next to each other, as described
     '''
-    truck_array = np.full((30, 30), fill_value=-1, dtype=int)
+    truck_array = np.full((25, 25), fill_value=-1, dtype=int)
     available_places = [(0, 0)]
 
     for rect_index, rect in enumerate(rects):
@@ -130,8 +130,8 @@ def rd_truck_cost():
 
 
 def rd_truck_size():
-    '''from 1 to 30 each side, used only after fitting previous trucks'''
-    return rd.randrange(1, 31), rd.randrange(1, 31)
+    '''from 1 to 25 each side, used only after fitting previous trucks'''
+    return rd.randrange(1, 26), rd.randrange(1, 26)
 
 
 
@@ -144,15 +144,16 @@ if __name__ == '__main__':
     np.set_printoptions(threshold=sys.maxsize, linewidth=sys.maxsize)
 
     # numbers of rectangles based on difficulty (index)
-    rect_counts = [i for i in range(5, 50)] + \
-                  [i for i in range(50, 200, 50)] + \
-                  [i for i in range(200, 1001, 200)]
+    rect_counts = [i for i in range(5, 55)] + \
+                  [i for i in range(60, 331, 30)] + \
+                  [i for i in range(350, 1000, 50)] +\
+                    [i for i in range(1000, 5001, 1000)]
     print('rect_counts:', rect_counts)
     print('len:', len(rect_counts))
     print()
 
     # seed
-    seed = 6969
+    seed = 69420
     rd.seed(seed)
     print('RANDOMIZING with seed:', seed)
     print()
@@ -167,13 +168,15 @@ if __name__ == '__main__':
         trucks = list()  # list of tuples of size, cost not included
 
         while rects:
+            # save figures of: BUILD 6TH truck OF DIFFICULTY 25
             rects, picked_rects = rd_pick_some_rects(rects)
             truck_array = rd_put(picked_rects,
-                               save_figures=index_difficulty==30 and len(trucks)==5)
+                               save_figures=index_difficulty==25 and len(trucks)==5)
             shape = shape_after_remove_redundant(truck_array)
             trucks.append(shape)
 
-            if index_difficulty == 30:
+            # save figures of: all trucks of difficulty 25
+            if index_difficulty == 25:
                 plot_full_truck_and_cut_truck(truck_array, remove_redundant(truck_array, shape), shape, len(trucks))
 
         trucks += [rd_truck_size() for _ in range(ceil(len(trucks)/5))]

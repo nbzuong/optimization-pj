@@ -57,13 +57,3 @@ if __name__ == '__main__':
     print('Number of bin used:',nbins)
     print('total cost: ', sum(atruck.bid for atruck in packer) )
     
-    packer2=newPacker(mode=1,bin_algo=3)
-
-    for r in rects:
-        packer.add_rect(*r)
-
-    for i in range(len(trucks)):
-        packer.add_bin(trucks[i][0],trucks[i][1],bid=trucks[i][2])
-
-    packer.pack()
- 

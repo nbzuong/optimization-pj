@@ -165,7 +165,7 @@ def main():
     try:
         file_path = sys.argv[1]
     except IndexError:
-        file_path = 'files/generated_data/1000.txt'
+        file_path = 'files/generated_data/0200.txt'
 
     time_limit = 600
     model = _2DBinPackingCP(file_path, time_limit)
