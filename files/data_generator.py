@@ -153,7 +153,7 @@ if __name__ == '__main__':
     print()
 
     # seed
-    seed = 6969
+    seed = 69420
     rd.seed(seed)
     print('RANDOMIZING with seed:', seed)
     print()
