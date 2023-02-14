@@ -29,7 +29,7 @@ for i in $x; do
 	touch $file;
 	touch $analyze;
 	
-	# execute CPM & time it
+	# execute CP & time it
 	/usr/bin/time -f "time: %e" -ao $file python3 files/CP_model.py $filepath > $file;
 
 done
