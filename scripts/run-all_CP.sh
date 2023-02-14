@@ -6,8 +6,8 @@
 # change dir to root of project
 cd $PWD
 
-outdir=scripts/output/out_CPM
-analyzedir=scripts/output/analyze_CPM
+outdir=scripts/output/out_CP
+analyzedir=scripts/output/analyze_CP
 
 # create output folder
 mkdir -p $outdir
@@ -21,8 +21,8 @@ for i in $x; do
 	echo "ping: $i";
 	
 	# in order: file for algo output, output parser, input for algo
-	file="$outdir/out_CPM_$i";
-	analyze="$analyzedir/analyze_CPM_$i";
+	file="$outdir/out_CP_$i";
+	analyze="$analyzedir/analyze_CP_$i";
 	filepath="files/generated_data/$i"
 	
 	# create file for algo output and output parser
@@ -35,4 +35,4 @@ for i in $x; do
 done
 	
 # run parser
-bash scripts/parse-output.sh CPM
+bash scripts/parse-output.sh CP
