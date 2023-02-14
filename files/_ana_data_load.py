@@ -86,10 +86,10 @@ plt.title('rect_count or n_rect')
 plt.xticks(list(range(0, 1001, 100)))
 plt.savefig('files/_analytical_figures/hist_rects')
 
-df_area_1.hist(column='car_count', bins=7)
-plt.title('car_count or n_car')
+df_area_1.hist(column='truck_count', bins=7)
+plt.title('truck_count or n_truck')
 plt.xticks(list(range(0, 351, 50)))
-plt.savefig('files/_analytical_figures/hist_cars')
+plt.savefig('files/_analytical_figures/hist_trucks')
 
 df_area_01.sort_values(by='rect_count', inplace=True)
 df_area_01.plot(x='rect_count', y='total cost', kind='scatter')
