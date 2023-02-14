@@ -179,9 +179,9 @@ def total_cost(trucks, used_trucks_indices_var):
 if __name__ == '__main__':
     np.set_printoptions(suppress=True)
 
-    rect_counts = [i for i in range(5, 55)] + \
-                  [i for i in range(60, 331, 30)] + \
-                  [i for i in range(350, 1001, 50)] + \
+    rect_counts = [i for i in range(5, 50)] + \
+                  [i for i in range(50, 200, 50)] + \
+                  [i for i in range(200, 1001, 200)] + \
                   ['_sample_data']
     directory = 'files/generated_data'
 
