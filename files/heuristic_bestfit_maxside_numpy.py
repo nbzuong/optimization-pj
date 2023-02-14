@@ -263,7 +263,7 @@ if __name__ == '__main__':
     print(rects_contained)
 
     used_trucks_indices_var = used_trucks_indices(rects_contained)
-    print(f'NUMBER OF truckS USED: {len(used_trucks_indices_var)}')
+    print(f'NUMBER OF TRUCKS USED: {len(used_trucks_indices_var)}')
     
     print(f'COST: {total_cost(trucks, used_trucks_indices_var)}')
 

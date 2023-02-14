@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 def plot_full_truck_and_cut_truck(truck_array, removed_array, shape, len_trucks):
     plt.plot([0, shape[1], shape[1]], [shape[0], shape[0], 0], 'red')
-    plt.imshow(truck_array, cmap='turbo', extent=(0,25,25,0), vmin=-1, vmax=5)
+    plt.imshow(truck_array, cmap='turbo', extent=(0,30, 30,0), vmin=-1, vmax=5)
     plt.savefig(f'files/generated_figures/{len_trucks}_A')
     plt.clf()
 
@@ -19,7 +19,7 @@ def plot_full_truck_and_cut_truck(truck_array, removed_array, shape, len_trucks)
 
 
 def plot_building_solution(truck_array, available_places):
-    plt.imshow(truck_array, cmap='turbo', extent=(0,25,25,0), vmin=-1, vmax=5)
+    plt.imshow(truck_array, cmap='turbo', extent=(0,30,30,0), vmin=-1, vmax=5)
     for place in available_places:
         plt.text(place[1]+0.5, place[0], 'x', ha='center', va='top', c='white')
     plt.savefig(f'files/generated_figures/{len(available_places)}')
@@ -130,8 +130,8 @@ def rd_truck_cost():
 
 
 def rd_truck_size():
-    '''from 1 to 50 each side, used only after fitting previous trucks'''
-    return rd.randrange(1, 51), rd.randrange(1, 51)
+    '''from 1 to 30 each side, used only after fitting previous trucks'''
+    return rd.randrange(1, 31), rd.randrange(1, 31)
 
 
 
@@ -169,11 +169,11 @@ if __name__ == '__main__':
         while rects:
             rects, picked_rects = rd_pick_some_rects(rects)
             truck_array = rd_put(picked_rects,
-                               save_figures=index_difficulty==25 and len(trucks)==5)
+                               save_figures=index_difficulty==30 and len(trucks)==5)
             shape = shape_after_remove_redundant(truck_array)
             trucks.append(shape)
 
-            if index_difficulty == 25:
+            if index_difficulty == 30:
                 plot_full_truck_and_cut_truck(truck_array, remove_redundant(truck_array, shape), shape, len(trucks))
 
         trucks += [rd_truck_size() for _ in range(ceil(len(trucks)/5))]
