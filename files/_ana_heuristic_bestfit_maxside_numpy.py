@@ -246,7 +246,7 @@ if __name__ == '__main__':
             rect = rects.pop(0)
             area_rect = area(rect)
 
-            # -------------------------------- ITERATE THROUGH truckS --------------------------------
+            # -------------------------------- ITERATE THROUGH TRUCKS --------------------------------
             for index, (truck, area_left, rects_contained_in_truck) in \
                     enumerate(zip(trucks, areas_left, rects_contained)):
                 # skip the truck if the rect is bigger than the area left 
