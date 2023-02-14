@@ -28,7 +28,7 @@ def plot_building_solution(truck_array, available_places):
 
 def rd_a_rect() -> tuple[int, int]:
     '''random a rectangle, return size'''
-    return rd.randrange(1, 6), rd.randrange(1, 6)
+    return rd.randrange(1, 11), rd.randrange(1, 11)
 
 
 def rd_some_rects(rect_count: int) -> list[tuple[int, int]]:
@@ -58,7 +58,7 @@ def rd_put(rects, save_figures=False) -> np.array:
     '''
     randomly put each rectangle next to each other, as described
     '''
-    truck_array = np.full((50, 50), fill_value=-1, dtype=int)
+    truck_array = np.full((30, 30), fill_value=-1, dtype=int)
     available_places = [(0, 0)]
 
     for rect_index, rect in enumerate(rects):
@@ -144,9 +144,9 @@ if __name__ == '__main__':
     np.set_printoptions(threshold=sys.maxsize, linewidth=sys.maxsize)
 
     # numbers of rectangles based on difficulty (index)
-    rect_counts = [i for i in range(5, 55)] + \
-                  [i for i in range(60, 331, 30)] + \
-                  [i for i in range(350, 1001, 50)]
+    rect_counts = [i for i in range(5, 50)] + \
+                  [i for i in range(50, 200, 50)] + \
+                  [i for i in range(200, 1001, 200)]
     print('rect_counts:', rect_counts)
     print('len:', len(rect_counts))
     print()
