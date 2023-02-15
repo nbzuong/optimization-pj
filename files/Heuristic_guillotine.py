@@ -1,4 +1,5 @@
 from rectpack import newPacker
+import time
 
 def read_input(file_path):
     with open(file_path) as f:
@@ -26,8 +27,8 @@ def best_score(remaining_area, truck):
     return max(remaining_area - truck[0]*truck[1], 0) 
 
 if __name__ == '__main__':
-    
-    file_path = 'files/generated_data/1000.txt'
+    start= time.time()
+    file_path = 'files/generated_data/0036.txt'
 
     #limit the time taken per iteration to reduce runtime at the cost of maybe skipped a better optimized solution
     GLOBAL_TIME_LIMIT_PER_ITER = 0.1
@@ -53,7 +54,8 @@ if __name__ == '__main__':
     packer.pack()
 
     nbins=len(packer)
-
+    end = time.time()
     print('Number of bin used:',nbins)
     print('total cost: ', sum(atruck.bid for atruck in packer) )
+    print(end - start)
     
