@@ -1,5 +1,7 @@
 from rectpack import newPacker
 import time
+import sys
+import subprocess
 
 def read_input(file_path):
     with open(file_path) as f:
@@ -27,12 +29,11 @@ def best_score(remaining_area, truck):
     return max(remaining_area - truck[0]*truck[1], 0) 
 
 if __name__ == '__main__':
+     
     start= time.time()
     file_path = 'files/generated_data/0036.txt'
 
-    #limit the time taken per iteration to reduce runtime at the cost of maybe skipped a better optimized solution
-    GLOBAL_TIME_LIMIT_PER_ITER = 0.1
-
+    subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'rectpack'])
     rect_count, truck_count, rects, trucks = read_input(file_path)
 
     # rects: sort them by area in descending order
