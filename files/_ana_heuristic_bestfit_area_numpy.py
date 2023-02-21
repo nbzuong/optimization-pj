@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
     rect_counts = [i for i in range(10, 55)] + \
                   [i for i in range(90, 361, 30)] + \
-                  [i for i in range(550, 1000, 50)] 
+                  [i for i in range(550, 1001, 50)] 
     directory = 'files/generated_data'
 
     ana_data = list()
