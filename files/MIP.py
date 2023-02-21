@@ -19,7 +19,7 @@ if __name__ == "__main__":
     try:
         file_path = sys.argv[1]
     except IndexError:
-        file_path = 'files/generated_data/0010.txt'
+        file_path = './generated_test/0015.txt'
     n_rectangles, n_trucks, rectangles, trucks = input(file_path)
     max_width, max_height = (
         max(trucks, key=lambda x: x[0])[0],
@@ -79,10 +79,11 @@ if __name__ == "__main__":
             # b = 1 => sum >= 1
             # b = 0 => sum = 0
             b = Solver.IntVar(solver, 0, 1, f'b[{i}][{j}]')
-            Solver.Add(solver, sum(t) <= b * M)
-            Solver.Add(solver, sum(t) + (1 - b) * M >= 1)
-
-            y = truck_index[i]
+            Solver.Add(solver, sum(t) <= b * M) #block the case where sum(t)>0 <=> there is a plausible way of putting item j next to i but b = 0 <=> i and j not in the same bin 
+            Solver.Add(solver, sum(t) + (1 - b) * M >= 1) #block the case where sum(t)= 0 <=> no way to put item j next to i but smh b=1 <=> i and j is in same bin
+            
+            #ensure that i and j is put inside the same bin
+            y = truck_index[i] 
             z = truck_index[j]
             t0 = Solver.IntVar(solver, 0, 1, f't0[{i}][{j}]')
             t1 = Solver.IntVar(solver, 0, 1, f't1[{i}][{j}]')
@@ -96,6 +97,7 @@ if __name__ == "__main__":
 
             Solver.Add(solver, b == 1 - t0)
 
+    # add the constraint to check if it is possible to put item i in bin j 
     for i in range(n_rectangles):
         for j in range(n_trucks):
             c = Solver.IntVar(solver, 0, 1, f"c[{i}][{j}]")
