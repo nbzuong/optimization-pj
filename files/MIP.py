@@ -1,5 +1,6 @@
 from ortools.linear_solver.pywraplp import Solver
 import sys
+import time
 
 def input(file_path):   # import the input from filepath
     with open(file_path) as f:
@@ -19,15 +20,15 @@ if __name__ == "__main__":
     try:
         file_path = sys.argv[1]
     except IndexError:
-        file_path = './generated_test/0015.txt'
+        file_path = 'files/generated_data/0045.txt'
     n_rectangles, n_trucks, rectangles, trucks = input(file_path)
     max_width, max_height = (
         max(trucks, key=lambda x: x[0])[0],
         max(trucks, key=lambda x: x[1])[1],
     )
-
+    
     solver = Solver.CreateSolver("SCIP")
-
+    start=time.time()
     # truck[i] = 1 if it is used
     truck_used  = [solver.IntVar(0, 1, f"truck_used[{i}]") for i in range(n_trucks)]
 
@@ -157,9 +158,11 @@ if __name__ == "__main__":
 
     # Creates solver and solve the model
     status = Solver.Solve(solver)
-
+    end = time.time()
     if status == Solver.OPTIMAL or status == Solver.FEASIBLE:
-        print(f"Min cost: {solver.Objective().Value()}")
+        
         for i in range(n_rectangles):
             print( f"put rectangle {i + 1} with rotation {rotate[i].solution_value()} in truck {truck_index[i].solution_value() + 1} at {left[i].solution_value()} {bottom[i].solution_value()} -> {right[i].solution_value()} {top[i].solution_value()}" )
+        print(f"Min cost: {solver.Objective().Value()}")
         print("truck_used:", len(set([truck_index[i].solution_value() for i in range(n_rectangles)])))
+        print("Running_time: ", end-start)

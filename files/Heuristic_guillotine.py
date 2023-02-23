@@ -31,7 +31,7 @@ def best_score(remaining_area, truck):
 if __name__ == '__main__':
      
     start= time.time()
-    file_path = 'files/generated_data/0036.txt'
+    file_path = 'files/generated_data/0005.txt'
 
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'rectpack'])
     rect_count, truck_count, rects, trucks = read_input(file_path)
