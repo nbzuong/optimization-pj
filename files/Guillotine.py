@@ -1,4 +1,3 @@
-
 import typing
 from functools import reduce
 from collections import namedtuple
@@ -6,7 +5,7 @@ from sortedcontainers import SortedListWithKey
 
 
 #-------------------------------- ITEM CLASS --------------------------------------
-class FreeRectangle(typing.NamedTuple('FreeRectangle', [('width', int), ('height', int), ('x', int), ('y', int)])):
+class FreeRectangle(typing.NamedTuple('FreeRectangle', [('width', int), ('height', int), ('x', int), ('y', int), ('id',int)])):
     __slots__ = ()
     @property
     def area(self):
@@ -61,6 +60,7 @@ def fee_per_area(truck):
 def area(rect:Item):
     return rect.width*rect.height
 
+#optimizing new bin insert by only inserting bins with min(|bin_area - remaining_area|)
 def best_score_remaining_area(remaining_area, trucks):
     best_score = trucks[0][0]*trucks[0][1]-remaining_area
     best_id = 0 
@@ -191,11 +191,11 @@ def split_along_axis(rect:FreeRectangle,item:Item,split:bool):
     result = []
 
     if right_w > 0 and right_h > 0:
-        right_rect = FreeRectangle(right_w, right_h, right_x, right_y)
+        right_rect = FreeRectangle(right_w, right_h, right_x, right_y,rect.id)
         result.append(right_rect)
 
     if top_w > 0 and top_h > 0:
-        top_rect = FreeRectangle(top_w, top_h, top_x, top_y)
+        top_rect = FreeRectangle(top_w, top_h, top_x, top_y,rect.id)
         result.append(top_rect)
 
     return result
@@ -229,19 +229,19 @@ def rectangle_merge(freerects):
     Finds pairs of free rectangles and merges them if they are mergable.
     """
     for freerect in freerects:
-        widths_func = lambda r: (r.width == freerect.width and r.x == freerect.x and r != freerect)
+        widths_func = lambda r: (r.width == freerect.width and r.x == freerect.x and r != freerect and r.id == freerect.id)
         matching_widths = list(filter(widths_func, freerects))
-        heights_func = lambda r: (r.height == freerect.height and r.y == freerect.y and r != freerect)
+        heights_func = lambda r: (r.height == freerect.height and r.y == freerect.y and r != freerect and r.id == freerect.id)
         matching_heights = list(filter(heights_func, freerects))
         if matching_widths:
             widths_adjacent = list(filter(lambda r: r.y == freerect.y + freerect.height, matching_widths)) 
 
             if widths_adjacent:
                 match_rect = widths_adjacent[0]
-                merged_rect = FreeRectangle(freerect.width, freerect.height+match_rect.height, freerect.x, freerect.y)
+                merged_rect = FreeRectangle(freerect.width, freerect.height+match_rect.height, freerect.x, freerect.y, freerect.id)
                 freerects.remove(freerect)
                 freerects.remove(match_rect)
-                freerects.add(merged_rect)
+                freerects.append(merged_rect)
 
         if matching_heights:
             heights_adjacent = list(filter(lambda r: r.x == freerect.x + freerect.width, matching_heights))
@@ -250,24 +250,30 @@ def rectangle_merge(freerects):
                 merged_rect = FreeRectangle(freerect.width+match_rect.width,
                                             freerect.height,
                                             freerect.x,
-                                            freerect.y)
+                                            freerect.y, freerect.id)
                 freerects.remove(freerect)
                 freerects.remove(match_rect)
-                freerects.add(merged_rect)
+                freerects.append(merged_rect)
     return freerects
 
 
 #-------------------------------------- GUILLOTINE MAIN -------------------------------------
 def guillotine(rect_count, truck_count, rects, trucks,remaining_area,score:str="BAF"):
-    free_rects = []
+    
+    #init counters
     rect_id=0 
-    rect_in_truck_no=[]
-    #init free_rects  list
     id = 0
-    free_rects.append(FreeRectangle(trucks[id][0],trucks[id][1],0,0))
+    
+    #save id of the bin item i was put in
+    rect_in_truck_no=[]
+    
+    #init free_rects  list
+    free_rects = []
+    free_rects.append(FreeRectangle(trucks[id][0],trucks[id][1],0,0,id))
+    
+    #init cost
     cost = trucks[id][2]
 
-   
     while rect_id<rect_count:
         no_fit = False
 
@@ -279,6 +285,8 @@ def guillotine(rect_count, truck_count, rects, trucks,remaining_area,score:str="
 
         #check if there's no free rects suitable to pack the current item
         if best_rect == None: no_fit=True
+
+        free_rects = rectangle_merge(free_rects)
 
         #debug
         print("CURRENT ITEM SIZE: width (%r) height (%r)" %(rects[rect_id].width,rects[rect_id].height) )
@@ -314,7 +322,7 @@ def guillotine(rect_count, truck_count, rects, trucks,remaining_area,score:str="
         if no_fit == True:
             cost+=trucks[id][2]
             id += 1 
-            free_rects.append(FreeRectangle(trucks[id][0],trucks[id][1],0,0))
+            free_rects.append(FreeRectangle(trucks[id][0],trucks[id][1],0,0,id))
             continue
     
     id+=1
